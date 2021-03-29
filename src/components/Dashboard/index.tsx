@@ -3,6 +3,8 @@ import api from '../../api/api';
 import { Card } from '../Card';
 import { Container, ContainerCard } from './style';
 
+import load from '../../assets/images/loader.svg';
+
 interface CityWeather {
   name: string;
   temp_max: number;
@@ -18,7 +20,8 @@ interface CityRequest {
 
 export const Dashboard = (): JSX.Element => {
   const [cityWeather, setCityWeather] = useState<CityWeather[]>([]);
-
+  const [loading, setLoading] = useState(false);
+ 
   useEffect(() => {
     getData();
   }, []);
@@ -33,6 +36,7 @@ export const Dashboard = (): JSX.Element => {
   });
 
   const getData = () => {
+    setLoading(true);
     api.get(`group?id=3445709,3421319,184745&APPID=fc84f380815d9c6c55b1c9fa5512de39&units=metric`)
     .then(result => {
       const newArray = result.data.list.map((weather: CityRequest) => {
@@ -45,6 +49,7 @@ export const Dashboard = (): JSX.Element => {
         }
       });
 
+      setLoading(false);
       setCityWeather(newArray);
     });
   }
@@ -52,16 +57,20 @@ export const Dashboard = (): JSX.Element => {
   return (
     <Container>
       <ContainerCard>
-        {cityWeather.map(item => (
-          <Card
-            key={item.name}
-            name={item.name}
-            temperature={item.temp_max}
-            humidity={item.humidity}
-            pressure={item.pressure}
-            lastUpdate={item.updatedAt}
-          />
-        ))}
+        {loading ? (
+          <img src={load} alt=""/>
+        ): 
+          cityWeather.map(item => (
+            <Card
+              key={item.name}
+              name={item.name}
+              temperature={item.temp_max}
+              humidity={item.humidity}
+              pressure={item.pressure}
+              lastUpdate={item.updatedAt}
+            />
+          ))
+        }
       </ContainerCard>
     </Container>
   )
