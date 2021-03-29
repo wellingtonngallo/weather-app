@@ -12,4 +12,9 @@ export const Container = styled.header`
   img {
     height: 25px;
   }
+
+  @media (max-width: 900px) {
+    position: fixed;
+    width: 100%;
+  }
 `

@@ -20,27 +20,41 @@ export const Dashboard = (): JSX.Element => {
   const [cityWeather, setCityWeather] = useState<CityWeather[]>([]);
 
   useEffect(() => {
-    api.get(`group?id=3445709,3421319,184745&APPID=fc84f380815d9c6c55b1c9fa5512de39&units=metric`)
-      .then(result => {
-        const newArray = result.data.list.map((weather: CityRequest) => {
-          return {
-            name: weather.name,
-            temp_max: weather.main.temp_max,
-            humidity: weather.main.humidity,
-            pressure: weather.main.pressure,
-            updatedAt: new Date()
-          }
-        });
-
-        setCityWeather(newArray);
-      })
+    getData();
   }, []);
-  
+
+  useEffect(() => {
+    const timer = setInterval(
+      () => getData(),
+      600000
+    );
+
+    return () => clearInterval(timer);
+  });
+
+  const getData = () => {
+    api.get(`group?id=3445709,3421319,184745&APPID=fc84f380815d9c6c55b1c9fa5512de39&units=metric`)
+    .then(result => {
+      const newArray = result.data.list.map((weather: CityRequest) => {
+        return {
+          name: weather.name,
+          temp_max: weather.main.temp_max,
+          humidity: weather.main.humidity,
+          pressure: weather.main.pressure,
+          updatedAt: `${new Date().getHours()}:${new Date().getMinutes()}`
+        }
+      });
+
+      setCityWeather(newArray);
+    });
+  }
+
   return (
     <Container>
       <ContainerCard>
         {cityWeather.map(item => (
           <Card
+            key={item.name}
             name={item.name}
             temperature={item.temp_max}
             humidity={item.humidity}

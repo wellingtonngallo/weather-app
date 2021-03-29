@@ -1,4 +1,4 @@
-import { Container, ContainerTemperature } from './styles';
+import { Container, ContainerTemperature, ContainerContent } from './styles';
 
 interface CardProps {
   name: string
@@ -9,16 +9,30 @@ interface CardProps {
 }
 
 export const Card = ({name, temperature, humidity, pressure, lastUpdate}: CardProps): JSX.Element => {
+  console.log(lastUpdate)
   return (
     <Container>
-      <div>
+      <ContainerContent>
         <header>
           <span>{name}</span>
         </header>
         <ContainerTemperature temperature={temperature}>
           {temperature}
         </ContainerTemperature>
-      </div>
+        <div className="card-info">
+          <div>
+            <span>HUMIDITY</span>
+            <p>{humidity}%</p>
+          </div>
+          <div>
+            <span>PRESSURE</span>
+            <p>{pressure}hPa</p>
+          </div>
+        </div>
+        <div className="card-time">
+        <p>Updated at {lastUpdate}</p>
+        </div>
+      </ContainerContent>
     </Container>
   )
 }
